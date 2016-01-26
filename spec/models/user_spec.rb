@@ -43,6 +43,13 @@ RSpec.describe User, type: :model do
   it "should be an invalid user due to incorrectly formatted email address" do
     expect(user_with_invalid_email_format).to_not be_valid
   end
-
 end
+
+   describe "modify user" do
+     let(:user_lower_name) {User.new(name: "alicia prather", email: "user@bloccit.com")}
+     let(:user_upper_name) {User.new(name: "Alicia Prather", email: "user@bloccit.com")}
+     it "should capitalize the first letter of each name" do
+       expect(user_lower_name.name).to eq user_upper_name.name
+   end
+ end
 end
