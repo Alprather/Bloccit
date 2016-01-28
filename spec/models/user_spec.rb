@@ -26,6 +26,12 @@ RSpec.describe User, type: :model do
      it "should respond to email" do
        expect(user).to respond_to(:email)
      end
+
+     it "should format the user's name" do
+      user.name = "bloc user"
+      user.save
+      expect(user.name).to eq "Bloc User"
+    end
    end
    describe "invalid user" do
   let(:user_with_invalid_name) { User.new(name: "", email: "user@bloccit.com") }
@@ -44,12 +50,4 @@ RSpec.describe User, type: :model do
     expect(user_with_invalid_email_format).to_not be_valid
   end
 end
-
-   describe "modify user" do
-     let(:user_lower_name) {User.new(name: "alicia prather", email: "user@bloccit.com")}
-     let(:user_upper_name) {User.new(name: "Alicia Prather", email: "user@bloccit.com")}
-     it "should capitalize the first letter of each name" do
-       expect(user_lower_name.name).to eq user_upper_name.name
-   end
- end
 end
