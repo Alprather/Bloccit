@@ -37,6 +37,7 @@ RSpec.describe UsersController, type: :controller do
       expect(assigns(:user).name).to eq new_user_attributes[:name]
     end
 
+
     it "sets user email properly" do
       post :create, user: new_user_attributes
       expect(assigns(:user).email).to eq new_user_attributes[:email]
@@ -51,5 +52,9 @@ RSpec.describe UsersController, type: :controller do
       post :create, user: new_user_attributes
       expect(assigns(:user).password_confirmation).to eq new_user_attributes[:password_confirmation]
     end
+    it "logs the user in after sign up" do
+       post :create, user: new_user_attributes
+       expect(session[:user_id]).to eq assigns(:user).id
+     end
   end
 end
