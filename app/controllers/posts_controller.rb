@@ -11,6 +11,7 @@ class PostsController < ApplicationController
      @post = Post.new
      @post.title = params[:post][:title]
      @post.body = params[:post][:body]
+     @post.price = params[:post][:price]
      @topic = Topic.find(params[:topic_id])
       @post.topic = @topic
 
@@ -30,6 +31,7 @@ class PostsController < ApplicationController
   @post = Post.find(params[:id])
   @post.title = params[:post][:title]
   @post.body = params[:post][:body]
+  @post.price = params[:post][:price]
 
   if @post.save
     flash[:notice] = "Post was updated."
