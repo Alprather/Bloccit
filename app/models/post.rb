@@ -5,6 +5,7 @@ belongs_to :user
    has_many :labelings, as: :labelable
    has_many :labels, through: :labelings
    has_many :votes, dependent: :destroy
+   has_many :favorites, dependent: :destroy
 default_scope { order('rank DESC') }
 
   validates :title, length: { minimum: 5 }, presence: true
