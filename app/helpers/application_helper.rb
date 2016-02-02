@@ -7,4 +7,9 @@ module ApplicationHelper
      content_tag :div, capture(&block), class: 'form-group'
    end
  end
+
+ def show_if(condition, if_true, default)
+   condition ? if_true : default
+ end
+
 end
