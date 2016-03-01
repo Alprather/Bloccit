@@ -11,9 +11,11 @@
      <%= @topic.description %>
    </p>
    <div>
-      <h3>Comments</h3>
-      <%= render @topic.comments %>
+      <%= render partial: 'comments/comment', locals: {commentable: @topic} %>
     </div>
+    <% if current_user %>
+      <%= render 'comments/form', comment: Comment.new, commentable: @topic %>
+    <% end %>
      <% @topic.posts.each do |post| %>
        <div class="media">
          <div class="media-body">

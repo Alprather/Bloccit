@@ -1,16 +1,15 @@
+<h3>Comments</h3>
+
+<% commentable.comments.each do |comment| %>
 <div class="media">
   <div class="media-body">
     <small>
       <%= comment.user.name %> commented <%= time_ago_in_words(comment.created_at) %> ago
         <% if user_is_authorized_for_comment?(comment) %>
-          | <%= link_to "Delete", [@post, comment], method: :delete %>
+          | <%= link_to "Delete", [commentable, comment], method: :delete %>
         <% end %>
     </small>
     <p><%= comment.body %></p>
   </div>
 </div>
-
-
-
-#do I need a conditional statement to handle both posts and topics?
-# or do I create another form?
+<% end %>

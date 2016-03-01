@@ -1,51 +1,55 @@
 class CommentsController < ApplicationController
+  before_action :require_sign_in
+  before_action :authorize_user, only: [:destroy]
+  before_action :set_commentable
 
-   before_action :require_sign_in
-   before_action :authorize_user, only: [:destroy]
+  def create
+    comment = Comment.new(comment_params)
+    comment.user = current_user
 
-   def create
-     if Post.find(params[:post_id])
-     @post = Post.find(params[:post_id])
-     comment = @post.comments.new(comment_params)
-     comment.user = current_user
-    else Topic.find(params[:topic_id])
-     @topic = Topic.find(params[:topic_id])
-     comment = @topic.comments.new(comment-params)
-     comment.user = current_user
-    end 
+    if comment.save
+      @commentable.comments << comment
+      flash[:notice] = 'Comment saved successfully.'
+    else
+      flash[:alert] = 'Comment failed to save.'
+    end
+    
+    redirect_to @redirect_url
+  end
 
-     if comment.save
-       flash[:notice] = "Comment saved successfully."
-       redirect_to [@post.topic, @post]
-     else
-       flash[:alert] = "Comment failed to save."
-       redirect_to [@post.topic, @post]
-     end
-   end
-
-   def destroy
-    @post = Post.find(params[:post_id])
-    comment = @post.comments.find(params[:id])
+  def destroy
+    comment = @commentable.comments.find(params[:id])
 
     if comment.destroy
-      flash[:notice] = "Comment was deleted."
-      redirect_to [@post.topic, @post]
+      flash[:notice] = 'Comment was deleted.'
     else
       flash[:alert] = "Comment couldn't be deleted. Try again."
-      redirect_to [@post.topic, @post]
+    end
+
+    redirect_to @redirect_url
+ end
+
+  private
+
+  def comment_params
+    params.require(:comment).permit(:body)
+  end
+
+  def authorize_user
+    comment = Comment.find(params[:id])
+    unless current_user == comment.user || current_user.admin?
+      flash[:alert] = 'You do not have permission to delete a comment.'
+      redirect_to [comment.post.topic, comment.post]
     end
   end
 
-   private
-
-   def comment_params
-     params.require(:comment).permit(:body)
-   end
-   def authorize_user
-  comment = Comment.find(params[:id])
-  unless current_user == comment.user || current_user.admin?
-    flash[:alert] = "You do not have permission to delete a comment."
-    redirect_to [comment.post.topic, comment.post]
+  def set_commentable
+    if params[:post_id]
+      @commentable = Post.find(params[:post_id])
+      @redirect_url = [@commentable.topic, @commentable]
+    else
+      @commentable = Topic.find(params[:topic_id])
+      @redirect_url = [@commentable]
+    end
   end
-end
 end
